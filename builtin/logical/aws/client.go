@@ -10,6 +10,7 @@ import (
 	"os"
 	"strconv"
 	"time"
+	"strings"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials/stscreds"
@@ -293,7 +294,10 @@ func (b *backend) nonCachedClientSTS(ctx context.Context, s logical.Storage, log
 // matchingSTSEndpoint returns the endpoint for the supplied region, according to
 // http://docs.aws.amazon.com/general/latest/gr/sts.html
 func matchingSTSEndpoint(stsRegion string) string {
-	return fmt.Sprintf("https://sts.%s.amazonaws.com", stsRegion)
+    if strings.HasPrefix(stsRegion, "eusc") {
+        return fmt.Sprintf("https://sts.%s.amazonaws.eu", stsRegion)
+    }
+    return fmt.Sprintf("https://sts.%s.amazonaws.com", stsRegion)
 }
 
 // getFallbackRegion returns an aws region fallback. It will check in the AWS specified order:
